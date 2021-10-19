@@ -6,7 +6,7 @@ require_once("db.php");
 ?>
 
 <head>
-    <title>Tasks</title>
+    <title>Web Notes</title>
     <style>
     table {
         font-family: arial, sans-serif;
