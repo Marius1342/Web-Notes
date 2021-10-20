@@ -32,6 +32,10 @@ class DB
             $DB = $this->db_db;
             $username = $this->db_user;
             $password = $this->db_pws;
+            if ($DB == "" || $username == "") {
+                echo "Setup error! Set the values";
+                exit();
+            }
             $this->conn = new PDO("mysql:host=$hostname;dbname=$DB", $username, $password);
             // set the PDO error mode to exception
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -43,5 +47,6 @@ class DB
         }
     }
 }
-
 ?>
+
+<p></p>
