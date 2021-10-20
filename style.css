@@ -1,0 +1,154 @@
+/*
+Buttons hover
+r / 0.807
+g&b / 0.9
+
+*/
+
+/*
+The div for the inputs
+*/
+.in_div{
+    left: 100px;
+    
+
+}
+
+.return_bnt:hover{
+    background-color: rgb(13, 135, 65);
+
+}
+    
+
+    table {
+    font-family: Arial;
+    border-collapse: collapse;
+    border:solid black 1px;
+    border-radius:6px;
+    -moz-border-radius:6px;
+    width: 100%;
+    }
+    
+    #legend {
+    background-color: #73a0ad;
+    color: white;
+    }
+    td,
+    th {
+    border: 3px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    }
+
+
+    table .colum:hover {
+    background-color: #ddd;
+
+    }
+
+    .link-id {
+    color: green;
+
+    }
+
+    .notes:hover {
+    color: rgba(14, 10, 230, 0.411);
+        
+    }
+
+
+    /*The Form new Project and add Note */
+    /*The DIV*/   
+    .new {
+        display: block;
+        margin-top: 3em;
+    }
+
+    .heading_label {
+        font-family: Calibri,sans-serif;
+        font-size: 250%;
+    }
+
+    .label_input {
+        padding: 12px 12px 12px 0;
+        font-family:  Verdana, sans-serif;
+        display: inline-block;
+
+    }
+
+
+
+    .input_class  {
+        width: 35%;
+        padding: 3px;
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        box-sizing: border-box;
+        resize: vertical;
+    }
+
+@media (min-width: 720px) {
+    .input_class  {
+        width: 15%;
+        padding: 3px;
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        box-sizing: border-box;
+        resize: vertical;
+    }
+}
+
+
+
+    .del_bnt:hover{
+        background-color: rgb(163, 27, 27);
+
+    }
+
+    .del_bnt {
+        background-color: rgb(202, 30, 30);
+        color: white;
+        padding: 6px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        float: left;
+    }
+
+    .bnt {
+        color: white;
+        padding: 6px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        float: left;
+    }
+
+
+    .submite_bnt:hover{
+        background-color: rgb(13, 135, 65);
+
+    }
+
+    .submite_bnt{
+        background-color: rgb(16, 150, 72);
+        color: white;
+        padding: 6px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        float: left;
+    }
+
+    #div {
+        position:absolute;
+        bottom:10px;
+
+        
+    }
+
+    .return_bnt {
+        text-decoration: none;
+        background-color: rgb(16, 150, 72);
+        
+    }
