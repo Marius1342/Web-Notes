@@ -7,63 +7,17 @@ require_once("db.php");
 
 <head>
     <title>Web Notes</title>
-    <style>
-    table {
-        font-family: arial, sans-serif;
-        border-collapse: collapse;
-        width: 100%;
-    }
+    <meta http-equiv="expires" content="0">
 
-    td,
-    th {
-        border: 3px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-    }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    .new {
-        margin-top: 3em;
-    }
+    <link content="no-cache" rel="stylesheet" href="style.css">
 
-    table tr:hover {
-        background-color: #ddd;
-
-    }
-
-    .newpr {
-        margin: auto;
-        width: 50%;
-        padding: 10px;
-    }
-
-    .link-id {
-        color: green;
-
-    }
-
-    .notes:hover {
-        color: rgb(10, 10, 230);
-    }
-    </style>
 </head>
 
 <body>
     <div>
         <?php
-
-        if (isset($_GET["id"])) {
-            if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
-                $url = "https://";
-            else
-                $url = "http://";
-            // Append the host(domain name, ip) to the URL.   
-            $url .= $_SERVER['HTTP_HOST'];
-
-            // Append the requested resource location to the URL was
-            $url .= $_SERVER['REQUEST_URI'];
-
-            echo "<a href='" . strtok($url, '?') . "'>Back to the main Page</a>";
-        }
         //Delete Pr
         if (isset($_GET["id"]) && isset($_GET["del"])) {
             //Delete all notes
@@ -120,10 +74,10 @@ require_once("db.php");
         //New Note
         if (isset($_GET["note"]) && isset($_GET["name"]) && isset($_GET["id"]) && isset($_GET["v"])) {
             $db = new DB();
-            $SQL = "SELECT *FROM tasks WHERE name=:name AND idofpr=:idofpr";
+            $SQL = "SELECT * FROM tasks WHERE name=:name AND idofpr=:idofpr";
             $conn = $db->conn->prepare($SQL);
             $conn->bindParam(":name", $_GET["name"]);
-            $conn->bindParam(":idofpr", $_GET["idofpr"]);
+            $conn->bindParam(":idofpr", $_GET["id"]); //idofpr
             try {
                 $conn->execute();
             } catch (PDOException $ex) {
@@ -133,19 +87,19 @@ require_once("db.php");
             $res = $conn->fetchAll(PDO::FETCH_ASSOC);
             if (count($res) > 0) {
                 echo "You have this note already";
-                exit();
-            }
+            } else {
 
-            $SQL = "INSERT INTO tasks (idofpr, name,contents) VALUES (:idofpr, :name,:contents )";
-            $conn = $db->conn->prepare($SQL);
-            $conn->bindParam(":idofpr", $_GET["id"]);
-            $conn->bindParam(":name", $_GET["name"]);
-            $conn->bindParam(":contents", $_GET["v"]);
-            try {
-                $conn->execute();
-            } catch (PDOException $ex) {
-                echo $ex->getMessage();
-                exit();
+                $SQL = "INSERT INTO tasks (idofpr, name,contents) VALUES (:idofpr, :name,:contents )";
+                $conn = $db->conn->prepare($SQL);
+                $conn->bindParam(":idofpr", $_GET["id"]);
+                $conn->bindParam(":name", $_GET["name"]);
+                $conn->bindParam(":contents", $_GET["v"]);
+                try {
+                    $conn->execute();
+                } catch (PDOException $ex) {
+                    echo $ex->getMessage();
+                    exit();
+                }
             }
         }
 
@@ -185,7 +139,7 @@ require_once("db.php");
         //Show all projects
         if (!isset($_GET["id"])) {
             echo "<table>
-        <tr>
+        <tr id='legend'>
         <th>Name</th>
         <th>Description</th>
         <tr>
@@ -204,7 +158,7 @@ require_once("db.php");
             // set the resulting array to associative
             $result = $conn->fetchAll(PDO::FETCH_ASSOC);
             foreach ($result as $row) {
-                echo "<tr><th><a class='link-id' href='?id=" . $row["id"] . "'>" . $row["name"] . "</th><th>" . $row["description"] . "</th></tr>";
+                echo "<tr class='colum'><th><a class='link-id' href='?id=" . $row["id"] . "'>" . $row["name"] . "</th><th>" . $row["description"] . "</th></tr>";
             }
             echo "</table>";
         }
@@ -213,7 +167,7 @@ require_once("db.php");
             $db = new DB();
 
             echo "<table>
-        <tr>
+        <tr id='legend'>
         <th>Name</th>
         <th>Contents</th>
         <tr>
@@ -229,7 +183,7 @@ require_once("db.php");
             }
             $result = $conn->fetchAll(PDO::FETCH_ASSOC);
             foreach ($result as $row) {
-                echo "<tr><th><p class='notes' onclick='del_note(" . $row["id"] . ");'/>" . $row["name"] . "</th><th>" . $row["contents"] . "</th></tr>";
+                echo "<tr class='colum'><th><p class='notes' onclick='del_note(" . $row["id"] . ");'/>" . $row["name"] . "</th><th>" . $row["contents"] . "</th></tr>";
             }
             echo "</table>";
         }
@@ -246,41 +200,49 @@ require_once("db.php");
         echo "</div>";
 
         if (!isset($_GET["id"])) : ?>
-        <div class="newpr">
-            <label for="newPr">New project</label>
+        <div class="new">
+            <label class="heading_label" for="newPr">New project</label>
             <form autocomplete="off" method="GET" name="newPr">
-                <label for="name">Name</label>
-                <br>
-                <input name="name" type="text" required>
-                <br>
-                <label for="description">Description</label>
-                <br>
-                <input name="description" type="text" required>
-                <br>
-                <input type="submit" value="Create">
+                <div>
+
+                    <label class="label_input" for="name">Name</label>
+                    <div class="in_div">
+                        <input class="input_class" name="name" type="text" placeholder="The name of your project"
+                            required>
+                    </div>
+
+                    <label class="label_input" for="description">Description</label>
+                    <div class="in_div">
+                        <input class="input_class" name="description" type="text" placeholder="The description"
+                            required>
+                    </div>
+                    <br>
+                    <input type="submit" class="submite_bnt" value="Create">
+                </div>
             </form>
         </div>
         <?php
         else : ?>
         <div class="new">
-            <label for="newPr">New note</label>
+            <label class="heading_label" for="newPr">New note</label>
             <form autocomplete="off" method="GET" name="newPr">
-                <label for="name">Name</label>
-                <br>
-                <input name="name" type="text" required>
-                <br>
-                <label for="v">Contents</label>
-                <br>
-                <input name="v" type="text">
-                <br>
+                <label class="label_input" for="name">Name</label>
+                <div class="in_div">
+                    <input class="input_class" name="name" type="text" required>
+                </div>
+                <label class="label_input" for="v">Contents</label>
+                <div class="in_div">
+                    <input class="input_class" name="v" type="text">
+                </div>
                 <input hidden type="text" name="id" value="<?php echo $_GET["id"]; ?>">
                 <input hidden type="text" name="note">
                 <br>
-                <input type="submit" value="Create">
+                <input type="submit" class="submite_bnt" value="Create">
             </form>
         </div>
         <div>
-            <button id="delete" onclick="DEL();">Delete project</button>
+            <br>
+            <button id="delete" class="del_bnt" onclick="DEL();">Delete project</button>
 
             <form method="GET" id="fr">
                 <input hidden type="text" name="id" value="<?php echo $_GET["id"]; ?>">
@@ -312,9 +274,22 @@ require_once("db.php");
             }
             </script>
         </div>
-        <?php endif; ?>
+        <?php endif;
 
+        if (isset($_GET["id"])) {
+            if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+                $url = "https://";
+            else
+                $url = "http://";
+            // Append the host(domain name, ip) to the URL.   
+            $url .= $_SERVER['HTTP_HOST'];
 
+            // Append the requested resource location to the URL was
+            $url .= $_SERVER['REQUEST_URI'];
+
+            echo "<div id='div'><br><a class='return_bnt bnt' href='" . strtok($url, '?') . "'>Back to the main Page</a></div>";
+        }
+        ?>
 
 </body>
 
