@@ -11,13 +11,31 @@ require_once("db.php");
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link content="no-cache" rel="stylesheet" href="style.css">
+    <link content="no-cache" rel="stylesheet" href="style.css?a=">
 
 </head>
 
 <body>
     <div>
         <?php
+        //Edit note
+        if (isset($_POST["text"]) && isset($_POST["edit"])) {
+            if ($_POST["text"] == "" || $_POST["edit"] == "") {
+                echo "Error update";
+            } else {
+                $db = new DB();
+                $SQL = "UPDATE tasks SET contents=:contents WHERE id=:id";
+                $conn = $db->conn->prepare($SQL);
+                $conn->bindParam(":contents", $_POST["text"]);
+                $conn->bindParam(":id", $_POST["edit"]);
+                try {
+                    $conn->execute();
+                } catch (PDOException $ex) {
+                    echo $ex->getMessage();
+                    exit();
+                }
+            }
+        }
         //Delete Pr
         if (isset($_GET["id"]) && isset($_GET["del"])) {
             //Delete all notes
@@ -162,7 +180,7 @@ require_once("db.php");
             }
             echo "</table>";
         }
-        //Show the Tasks of the project to
+        //Show the Tasks of the project 
         else if (isset($_GET["id"])) {
             $db = new DB();
 
@@ -183,7 +201,8 @@ require_once("db.php");
             }
             $result = $conn->fetchAll(PDO::FETCH_ASSOC);
             foreach ($result as $row) {
-                echo "<tr class='colum'><th><p class='notes' onclick='del_note(" . $row["id"] . ");'/>" . $row["name"] . "</th><th>" . $row["contents"] . "</th></tr>";
+                //contenteditable='true' at p to edit
+                echo "<tr class='colum'><th><p class='notes' onclick='del_note(" . $row["id"] . ");'/>" . $row["name"] . "</th><th><p id='" . $row["id"] . "'>" . $row["contents"] . "</p> <a class='edit' onclick='edit(" . $row["id"] . ", this);' >Edit</a></th></tr>";
             }
             echo "</table>";
         }
@@ -256,6 +275,12 @@ require_once("db.php");
                 <input hidden type="submite">
             </form>
 
+            <form method="POST" id="edit_f">
+                <input hidden type="text" id="edit_fid" name="edit" value="">
+                <input hidden type="text" id="edit_ftext" name="text" value="">
+                <input hidden type="text" name="id" value="<?php echo $_GET["id"]; ?>">
+                <input hidden type="submite">
+            </form>
 
             <script>
             function del_note(id) {
@@ -269,6 +294,21 @@ require_once("db.php");
 
                 if (confirm("Do you really want to delete this project?")) {
                     document.getElementById("fr").submit();
+                }
+
+            }
+
+            function edit(id, caller) {
+                //Save
+                if (caller.innerText != "Edit") {
+                    document.getElementById("edit_fid").value = document.getElementById(id).id;
+                    document.getElementById("edit_ftext").value = document.getElementById(id).innerText;
+                    document.getElementById("edit_f").submit();
+                }
+                //Set edit mode
+                else {
+                    document.getElementById(id).contentEditable = true;
+                    caller.innerText = "Save";
                 }
 
             }
