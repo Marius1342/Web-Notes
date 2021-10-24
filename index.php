@@ -18,6 +18,25 @@ require_once("db.php");
 <body>
     <div>
         <?php
+        //Edit description
+        if (isset($_POST["id_pr"]) && isset($_POST["new_desc"])) {
+            if ($_POST["id_pr"] == "" || $_POST["new_desc"] == "") {
+                echo "Edit description every param must be set";
+                exit();
+            }
+            $db = new DB();
+            $SQL = "UPDATE projects SET description=:description WHERE id=:id";
+            $conn = $db->conn->prepare($SQL);
+            $conn->bindParam(":description", $_POST["new_desc"]);
+            $conn->bindParam(":id", $_POST["id_pr"]);
+            try {
+                $conn->execute();
+            } catch (PDOException $ex) {
+                echo $ex->getMessage();
+                exit();
+            }
+        }
+
         //Edit note
         if (isset($_POST["text"]) && isset($_POST["edit"])) {
             if ($_POST["text"] == "" || $_POST["edit"] == "") {
@@ -176,13 +195,30 @@ require_once("db.php");
             // set the resulting array to associative
             $result = $conn->fetchAll(PDO::FETCH_ASSOC);
             foreach ($result as $row) {
-                echo "<tr class='colum'><th><a class='link-id' href='?id=" . $row["id"] . "'>" . $row["name"] . "</th><th>" . $row["description"] . "</th></tr>";
+                echo "<tr class='colum'><th><a class='link-id' href='?id=" . $row["id"] . "'>" . $row["name"] . "</th><th><p id='" . $row["id"] . "'>" . $row["description"] . "</p> <a class='edit' onclick='edit(" . $row["id"] . ", this);' >Edit</a> </th></tr>";
             }
             echo "</table>";
         }
         //Show the Tasks of the project 
         else if (isset($_GET["id"])) {
             $db = new DB();
+            $SQL = "SELECT name FROM projects WHERE id=:id";
+            $conn = $db->conn->prepare($SQL);
+            $conn->bindParam(":id", $_GET["id"]);
+            try {
+                $conn->execute();
+            } catch (PDOException $e) {
+                echo "Error: " . $e->getMessage();
+                exit();
+            }
+            $result = $conn->fetchAll(PDO::FETCH_ASSOC);
+            if (count($result) == 0) {
+                echo "Cant find project";
+                exit();
+            }
+            $title = $result[0]["name"];
+
+
 
             echo "<table>
         <tr id='legend'>
@@ -201,19 +237,10 @@ require_once("db.php");
             }
             $result = $conn->fetchAll(PDO::FETCH_ASSOC);
             foreach ($result as $row) {
-                //contenteditable='true' at p to edit
                 echo "<tr class='colum'><th><p class='notes' onclick='del_note(" . $row["id"] . ");'/>" . $row["name"] . "</th><th><p id='" . $row["id"] . "'>" . $row["contents"] . "</p> <a class='edit' onclick='edit(" . $row["id"] . ", this);' >Edit</a></th></tr>";
             }
             echo "</table>";
         }
-
-
-
-
-
-
-
-
 
 
         echo "</div>";
@@ -239,6 +266,27 @@ require_once("db.php");
                     <input type="submit" class="submite_bnt" value="Create">
                 </div>
             </form>
+            <form method="POST" id="edit_f">
+                <input hidden type="text" id="edit_fid" name="id_pr" value="">
+                <input hidden type="text" id="edit_ftext" name="new_desc" value="">
+                <input hidden type="submite">
+            </form>
+            <script>
+            function edit(id, caller) {
+                //Save
+                if (caller.innerText != "Edit") {
+                    document.getElementById("edit_fid").value = document.getElementById(id).id;
+                    document.getElementById("edit_ftext").value = document.getElementById(id).innerText;
+                    document.getElementById("edit_f").submit();
+                }
+                //Set edit mode
+                else {
+                    document.getElementById(id).contentEditable = true;
+                    caller.innerText = "Save";
+                }
+
+            }
+            </script>
         </div>
         <?php
         else : ?>
@@ -312,6 +360,8 @@ require_once("db.php");
                 }
 
             }
+
+            document.title = "<?php echo $title; ?>";
             </script>
         </div>
         <?php endif;
