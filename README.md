@@ -17,7 +17,7 @@ __Written in php and javascript and use html__
 
 *Be careful you have to know what you do!!*
 
-*Installation about 10 minutes 🕐 *
+*Installation about 10 minutes 🕐*
 
 * Needed things
     * Database with phpmyadmin
