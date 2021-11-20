@@ -10,7 +10,8 @@ require_once("db.php");
     <meta http-equiv="expires" content="0">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta charset="UTF-8">
     <link content="no-cache" rel="stylesheet" href="style.css?a=">
 
 </head>
@@ -18,6 +19,13 @@ require_once("db.php");
 <body>
     <div>
         <?php
+
+        function Escape($text)
+        {
+            return htmlspecialchars($text, ENT_QUOTES);
+        }
+
+
         //Edit description
         if (isset($_POST["id_pr"]) && isset($_POST["new_desc"])) {
             if ($_POST["id_pr"] == "" || $_POST["new_desc"] == "") {
@@ -27,6 +35,7 @@ require_once("db.php");
             $db = new DB();
             $SQL = "UPDATE projects SET description=:description WHERE id=:id";
             $conn = $db->conn->prepare($SQL);
+            $_POST["new_desc"] = Escape($_POST["new_desc"]);
             $conn->bindParam(":description", $_POST["new_desc"]);
             $conn->bindParam(":id", $_POST["id_pr"]);
             try {
@@ -45,6 +54,7 @@ require_once("db.php");
                 $db = new DB();
                 $SQL = "UPDATE tasks SET contents=:contents WHERE id=:id";
                 $conn = $db->conn->prepare($SQL);
+                $_POST["text"] =  Escape($_POST["text"]);
                 $conn->bindParam(":contents", $_POST["text"]);
                 $conn->bindParam(":id", $_POST["edit"]);
                 try {
@@ -113,6 +123,8 @@ require_once("db.php");
             $db = new DB();
             $SQL = "SELECT * FROM tasks WHERE name=:name AND idofpr=:idofpr";
             $conn = $db->conn->prepare($SQL);
+            $_GET["name"] = Escape($_GET["name"]);
+            $_GET["v"] = Escape($_GET["v"]);
             $conn->bindParam(":name", $_GET["name"]);
             $conn->bindParam(":idofpr", $_GET["id"]); //idofpr
             try {
@@ -147,8 +159,8 @@ require_once("db.php");
                 echo "Enter a name for the project";
                 exit();
             }
-
-
+            $_GET["name"] = Escape($_GET["name"]);
+            $_GET["description"] = Escape($_GET["description"]);
 
             $db = new DB();
 
@@ -237,7 +249,7 @@ require_once("db.php");
             }
             $result = $conn->fetchAll(PDO::FETCH_ASSOC);
             foreach ($result as $row) {
-                echo "<tr class='colum'><th><p class='notes' onclick='del_note(" . $row["id"] . ");'/>" . $row["name"] . "</th><th><p id='" . $row["id"] . "'>" . $row["contents"] . "</p> <a class='edit' onclick='edit(" . $row["id"] . ", this);' >Edit</a></th></tr>";
+                echo "<tr class='colum'><th><p class='notes' onclick='del_note(" . $row["id"] . ");'/>" . $row["name"] . "</th><th><p id='" . $row["id"] . "' >" . $row["contents"] . "</p> <a class='edit' onclick='edit(" . $row["id"] . ", this);' >Edit</a></th></tr>";
             }
             echo "</table>";
         }
