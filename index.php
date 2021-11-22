@@ -12,7 +12,7 @@ require_once("db.php");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <meta charset="UTF-8">
-    <link content="no-cache" rel="stylesheet" href="style.css?a=">
+    <link content="no-cache" rel="stylesheet" href="style.css?a=aa">
 
 </head>
 
@@ -24,7 +24,6 @@ require_once("db.php");
         {
             return htmlspecialchars($text, ENT_QUOTES);
         }
-
 
         //Edit description
         if (isset($_POST["id_pr"]) && isset($_POST["new_desc"])) {
@@ -232,7 +231,7 @@ require_once("db.php");
 
 
 
-            echo "<table>
+            echo "<table id='table_'>
         <tr id='legend'>
         <th>Name</th>
         <th>Contents</th>
@@ -249,7 +248,7 @@ require_once("db.php");
             }
             $result = $conn->fetchAll(PDO::FETCH_ASSOC);
             foreach ($result as $row) {
-                echo "<tr class='colum'><th><p class='notes' onclick='del_note(" . $row["id"] . ");'/>" . $row["name"] . "</th><th><p id='" . $row["id"] . "' >" . $row["contents"] . "</p> <a class='edit' onclick='edit(" . $row["id"] . ", this);' >Edit</a></th></tr>";
+                echo "<tr class='colum'><th><p class='notes' onclick='del_note(" . $row["id"] . ");'/>" . $row["name"] . "</th><th><p id='" . $row["id"] . "' class='item_id' >" . $row["contents"] . "</p> <a class='edit' onclick='edit(" . $row["id"] . ", this);' >Edit</a></th></tr>";
             }
             echo "</table>";
         }
@@ -258,124 +257,122 @@ require_once("db.php");
         echo "</div>";
 
         if (!isset($_GET["id"])) : ?>
-        <div class="new">
-            <label class="heading_label" for="newPr">New project</label>
-            <form autocomplete="off" method="GET" name="newPr">
-                <div>
+            <div class="new">
+                <label class="heading_label" for="newPr">New project</label>
+                <form autocomplete="off" method="GET" name="newPr">
+                    <div>
 
-                    <label class="label_input" for="name">Name</label>
-                    <div class="in_div">
-                        <input class="input_class" name="name" type="text" placeholder="The name of your project"
-                            required>
+                        <label class="label_input" for="name">Name</label>
+                        <div class="in_div">
+                            <input class="input_class" name="name" type="text" placeholder="The name of your project" required>
+                        </div>
+
+                        <label class="label_input" for="description">Description</label>
+                        <div class="in_div">
+                            <input class="input_class" name="description" type="text" placeholder="The description" required>
+                        </div>
+                        <br>
+                        <input type="submit" class="submite_bnt" value="Create">
                     </div>
+                </form>
+                <form method="POST" id="edit_f">
+                    <input hidden type="text" id="edit_fid" name="id_pr" value="">
+                    <input hidden type="text" id="edit_ftext" name="new_desc" value="">
+                    <input hidden type="submite">
+                </form>
+                <script>
+                    function edit(id, caller) {
+                        //Save
+                        if (caller.innerText != "Edit") {
+                            document.getElementById("edit_fid").value = document.getElementById(id).id;
+                            document.getElementById("edit_ftext").value = document.getElementById(id).innerText;
+                            document.getElementById("edit_f").submit();
+                        }
+                        //Set edit mode
+                        else {
+                            document.getElementById(id).contentEditable = true;
+                            caller.innerText = "Save";
+                        }
 
-                    <label class="label_input" for="description">Description</label>
-                    <div class="in_div">
-                        <input class="input_class" name="description" type="text" placeholder="The description"
-                            required>
-                    </div>
-                    <br>
-                    <input type="submit" class="submite_bnt" value="Create">
-                </div>
-            </form>
-            <form method="POST" id="edit_f">
-                <input hidden type="text" id="edit_fid" name="id_pr" value="">
-                <input hidden type="text" id="edit_ftext" name="new_desc" value="">
-                <input hidden type="submite">
-            </form>
-            <script>
-            function edit(id, caller) {
-                //Save
-                if (caller.innerText != "Edit") {
-                    document.getElementById("edit_fid").value = document.getElementById(id).id;
-                    document.getElementById("edit_ftext").value = document.getElementById(id).innerText;
-                    document.getElementById("edit_f").submit();
-                }
-                //Set edit mode
-                else {
-                    document.getElementById(id).contentEditable = true;
-                    caller.innerText = "Save";
-                }
-
-            }
-            </script>
-        </div>
+                    }
+                </script>
+            </div>
         <?php
         else : ?>
-        <div class="new">
-            <label class="heading_label" for="newPr">New note</label>
-            <form autocomplete="off" method="GET" name="newPr">
-                <label class="label_input" for="name">Name</label>
-                <div class="in_div">
-                    <input class="input_class" name="name" type="text" required>
-                </div>
-                <label class="label_input" for="v">Contents</label>
-                <div class="in_div">
-                    <input class="input_class" name="v" type="text">
-                </div>
-                <input hidden type="text" name="id" value="<?php echo $_GET["id"]; ?>">
-                <input hidden type="text" name="note">
+            <div class="new">
+                <label class="heading_label" for="newPr">New note</label>
+                <form autocomplete="off" method="GET" name="newPr">
+                    <label class="label_input" for="name">Name</label>
+                    <div class="in_div">
+                        <input class="input_class" name="name" type="text" required>
+                    </div>
+                    <label class="label_input" for="v">Contents</label>
+                    <div class="in_div">
+                        <input class="input_class" name="v" type="text">
+                    </div>
+                    <input hidden type="text" name="id" value="<?php echo $_GET["id"]; ?>">
+                    <input hidden type="text" name="note">
+                    <br>
+                    <input type="submit" class="submite_bnt" value="Create">
+                </form>
+            </div>
+            <div>
                 <br>
-                <input type="submit" class="submite_bnt" value="Create">
-            </form>
-        </div>
-        <div>
-            <br>
-            <button id="delete" class="del_bnt" onclick="DEL();">Delete project</button>
+                <button id="delete" class="del_bnt" onclick="DEL();">Delete project</button>
 
-            <form method="GET" id="fr">
-                <input hidden type="text" name="id" value="<?php echo $_GET["id"]; ?>">
-                <input hidden type="text" name="del">
-                <input hidden type="submite">
-            </form>
+                <form method="GET" id="fr">
+                    <input hidden type="text" name="id" value="<?php echo $_GET["id"]; ?>">
+                    <input hidden type="text" name="del">
+                    <input hidden type="submite">
+                </form>
 
-            <form method="GET" id="del_n">
-                <input hidden type="text" id="del_n_id" name="id_" value="">
-                <input hidden type="text" name="id" value="<?php echo $_GET["id"]; ?>">
-                <input hidden type="submite">
-            </form>
+                <form method="GET" id="del_n">
+                    <input hidden type="text" id="del_n_id" name="id_" value="">
+                    <input hidden type="text" name="id" value="<?php echo $_GET["id"]; ?>">
+                    <input hidden type="submite">
+                </form>
 
-            <form method="POST" id="edit_f">
-                <input hidden type="text" id="edit_fid" name="edit" value="">
-                <input hidden type="text" id="edit_ftext" name="text" value="">
-                <input hidden type="text" name="id" value="<?php echo $_GET["id"]; ?>">
-                <input hidden type="submite">
-            </form>
+                <form method="POST" id="edit_f">
+                    <input hidden type="text" id="edit_fid" name="edit" value="">
+                    <input hidden type="text" id="edit_ftext" name="text" value="">
+                    <input hidden type="text" name="id" value="<?php echo $_GET["id"]; ?>">
+                    <input hidden type="submite">
+                </form>
 
-            <script>
-            function del_note(id) {
-                if (confirm("Do you really want to delete this note?")) {
-                    document.getElementById("del_n_id").value = id;
-                    document.getElementById("del_n").submit();
-                }
-            }
+                <script>
+                    function del_note(id) {
+                        if (confirm("Do you really want to delete this note?")) {
+                            document.getElementById("del_n_id").value = id;
+                            document.getElementById("del_n").submit();
+                        }
+                    }
 
-            function DEL() {
+                    function DEL() {
 
-                if (confirm("Do you really want to delete this project?")) {
-                    document.getElementById("fr").submit();
-                }
+                        if (confirm("Do you really want to delete this project?")) {
+                            document.getElementById("fr").submit();
+                        }
 
-            }
+                    }
 
-            function edit(id, caller) {
-                //Save
-                if (caller.innerText != "Edit") {
-                    document.getElementById("edit_fid").value = document.getElementById(id).id;
-                    document.getElementById("edit_ftext").value = document.getElementById(id).innerText;
-                    document.getElementById("edit_f").submit();
-                }
-                //Set edit mode
-                else {
-                    document.getElementById(id).contentEditable = true;
-                    caller.innerText = "Save";
-                }
+                    function edit(id, caller) {
+                        //Save
+                        if (caller.innerText != "Edit") {
+                            document.getElementById("edit_fid").value = document.getElementById(id).id;
+                            document.getElementById("edit_ftext").value = document.getElementById(id).innerText;
+                            document.getElementById("edit_f").submit();
+                        }
+                        //Set edit mode
+                        else {
+                            document.getElementById(id).contentEditable = true;
+                            caller.innerText = "Save";
+                        }
 
-            }
+                    }
 
-            document.title = "<?php echo $title; ?>";
-            </script>
-        </div>
+                    document.title = "<?php echo $title; ?>";
+                </script>
+            </div>
         <?php endif;
 
         if (isset($_GET["id"])) {
@@ -392,7 +389,126 @@ require_once("db.php");
             echo "<div id='div'><br><a class='return_bnt bnt' href='" . strtok($url, '?') . "'>Back to the main Page</a></div>";
         }
         ?>
+        <!--
+        Auto refresh
+        !-->
+        <?php
+        if (REFRESH == true && isset($_GET["id"])) :
+        ?>
 
+            <script>
+                var DEBUG = false;
+                const SecondsToMilliseconds = 1000;
+                var items_cl = document.getElementsByClassName("colum");
+                var items = document.getElementsByClassName("item_id");
+
+
+                function RemoveById(id) {
+                    for (let i = 0; i < items.length; i++) {
+                        if (id == items[i].id) {
+                            items[i].remove();
+                            items_cl[i].remove();
+                            return;
+                        }
+
+                    }
+
+
+                }
+
+                function IdGetPosition(id, arr) {
+                    for (let i = 0; i < arr.length; i++) {
+                        if (id == arr[i]) {
+                            return i;
+                        }
+
+                    }
+                    console.error("Out of range:" + id + " " + arr);
+                    return -1;
+                }
+
+                function IdExistArray(id, arr) {
+                    for (let i = 0; i < arr.length; i++) {
+                        if (id == arr[i]) {
+                            return true;
+                        }
+
+                    }
+                    return false;
+                }
+
+                function HtmlCollectionToArrayId(HtmlCollection) {
+                    var arr = [];
+                    for (let i = 0; i < HtmlCollection.length; i++) {
+                        arr.push(HtmlCollection[i].id);
+                    }
+                    return arr;
+                }
+
+                function AddItem(html) {
+                    var tbody = document.getElementsByClassName("colum")[document.getElementsByClassName("colum").length - 1];
+                    tbody.insertAdjacentHTML('afterend', html);
+
+                }
+                setInterval(() => {
+                    items_cl = document.getElementsByClassName("colum");
+                    items = document.getElementsByClassName("item_id");
+                    fetch("API.php?id=" + <?php echo $_GET["id"]; ?>).then(data => data.json()).then(
+
+                        (data) => {
+                            if (data["Status"] != "202") {
+                                console.error("CANT FETCH:" + data["Status"]);
+                                return;
+                            } else {
+                                console.log(data["Length"])
+                                var ids = HtmlCollectionToArrayId(items);
+                                var DeleteIds = HtmlCollectionToArrayId(items);
+                                var toAddIds = [];
+                                for (let i = 0; i < data["id"].length; i++) {
+                                    if (IdExistArray(data["id"][i], ids) == false) {
+                                        toAddIds.push(data["id"][i]);
+                                    } else if (IdExistArray(data["id"][i], ids) == true) {
+                                        var id = IdGetPosition(data["id"][i], DeleteIds);
+                                        DeleteIds.splice(id, 1);
+
+                                    }
+                                }
+                                if (DEBUG) {
+                                    console.log(DeleteIds + ":" + toAddIds);
+                                }
+                                //Delete node
+                                for (let i = 0; i < DeleteIds.length; i++) {
+                                    RemoveById(DeleteIds[i]);
+                                }
+
+                                //Add new node
+                                for (let i = 0; i < toAddIds.length; i++) {
+                                    fetch("API.php?id=" + <?php echo $_GET["id"]; ?> + "&nd=" + toAddIds[i]).then((
+                                        data) => data.json()).then((data) => {
+                                        if (data["Status"] == "202") {
+                                            AddItem(data["tr"]);
+                                        } else {
+                                            console.error("CANT FETCH add node");
+                                        }
+
+                                    })
+
+
+                                }
+
+                            }
+                        }
+                    )
+
+
+
+                }, <?php echo time; ?> * SecondsToMilliseconds)
+            </script>
+
+
+        <?php
+        endif;
+        ?>
 </body>
 
 </html>

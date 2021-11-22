@@ -125,6 +125,12 @@ The div for the inputs
     }
 
 
+    .edit{
+        font-size: small;
+        text-decoration: none;
+        text-align: right;
+    }
+
     .submite_bnt:hover{
         background-color: rgb(13, 135, 65);
 

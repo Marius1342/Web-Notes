@@ -6,14 +6,14 @@
     * ✅ Easy to expand
     * ✅ No data sharing
     * ✅ On your server
+    * ✅ Live node update
     * ✅ Free
-
 
 __Written in php and javascript and use html__
 
 *Tested with php7.3*
 
-## Set up
+## Setup
 
 *Be careful you have to know what you do!!*
 
@@ -43,5 +43,4 @@ Now edit the file "db.php" and write your data in.
 You are ready!
 
 
-
-On your own risk!
+On your on risk!

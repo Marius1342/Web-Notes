@@ -1,17 +1,21 @@
 <?php
-
-
+//If you enable that your page can be slower and your data usage get's very high.
+//Disable = false
+//Enable = true
+const REFRESH = false;
+//Every 10 seconds
+const time = 10;
 
 class DB
 {
     //Set the host in most cases it is the localhost
     private $db_host = "localhost";
     //Set the user
-    private $db_user = "";
+    private $db_user = "Tasks";
     //Set the database name of the system
-    private $db_db = "";
+    private $db_db = "Tasks";
     //Set the password of the user
-    private $db_pws = "";
+    private $db_pws = "Tasks";
 
     public $conn;
 
