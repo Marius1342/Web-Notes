@@ -11,7 +11,7 @@
 
 __Written in php and javascript and use html__
 
-*Tested with php3.7*
+*Tested with php7.3*
 
 ## Set up
 
