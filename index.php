@@ -460,7 +460,9 @@ require_once("db.php");
                                 console.error("CANT FETCH:" + data["Status"]);
                                 return;
                             } else {
-                                console.log(data["Length"])
+                                if (DEBUG) {
+                                    console.log(data["Length"]);
+                                }
                                 var ids = HtmlCollectionToArrayId(items);
                                 var DeleteIds = HtmlCollectionToArrayId(items);
                                 var toAddIds = [];
